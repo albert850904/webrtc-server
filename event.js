@@ -7,21 +7,18 @@ const users = {
 const joinRoom =
   (socket) =>
   ({ username, room }) => {
-    socket.join(room, () => {
-      console.log("join", users[room]);
-      users[room][socket.client.id] = { username, id: socket.client.id };
-      console.log("emit");
-      socket.broadcast.in(room).emit(socketEvents.NEW_USER_JOIN, users[room]);
-    });
+    users[room][socket.client.id] = { username, id: socket.client.id };
+    socket.join(room);
+    console.log("emit", users);
+    socket.broadcast.in(room).emit(socketEvents.NEW_USER_JOIN, users[room]);
   };
 
 const leaveRoom =
   (socket) =>
   ({ room }) => {
-    socket.leave(room, () => {
-      delete user[room][socket.client.id];
-      socket.broadcast.in(room).emit(socketEvents.USER_LEFT_ROOM, users[room]);
-    });
+    socket.leave(room);
+    delete users[room][socket.client.id];
+    socket.broadcast.in(room).emit(socketEvents.USER_LEFT_ROOM, users[room]);
   };
 
 const SDPOffer =
