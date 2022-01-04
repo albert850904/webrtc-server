@@ -13,7 +13,7 @@ const server = http.createServer(app); // use express to handle http server
 const socketio = socket(server, {
   // allow cross origin
   cors: {
-    origin: ["http://localhost:3000"],
+    origin: ["http://localhost:3000", "https://kairu-cheng.site"],
     methods: ["GET", "POST"],
   },
 });
@@ -35,9 +35,8 @@ const onConnection = (socket) => {
   });
   // SDP answer
   socket.on(socketEvents.SDP_ANSWER, (answer) => {
-    events.SDPAnswer(socket)({ answer, room: "general" })
-  }
-  );
+    events.SDPAnswer(socket)({ answer, room: "general" });
+  });
   // ICE candidate
   socket.on(socketEvents.ICE_CANDIDATE, (candidate) =>
     events.ICECandidate(socket)({ candidate, room: "general" })
