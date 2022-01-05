@@ -12,10 +12,10 @@ const app = express();
 const server = http.createServer(app); // use express to handle http server
 const socketio = socket(server, {
   // allow cross origin
-  cors: {
-    origin: ["http://localhost:3000", "https://kairu-cheng.site"],
-    methods: ["GET", "POST"],
-  },
+  cors: true,
+  origins: ["http://localhost:3000", "https://kairu-cheng.site"],
+  // {   methods: ["GET", "POST"],
+  // },
 });
 
 // socket connection
