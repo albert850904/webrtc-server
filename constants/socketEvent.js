@@ -6,4 +6,10 @@ module.exports = Object.freeze({
   ICE_CANDIDATE: "icecandidate",
   NEW_USER_JOIN: "newUserJoin",
   USER_LEFT_ROOM: "userLeftRoom",
+
+  // version 2
+  WHO_AM_I: "whoAmI",
+  CALL_USER: "callUser",
+  ANSWERCALL: "answerCall",
+  CALL_ACCEPTED: "callAccepted",
 });

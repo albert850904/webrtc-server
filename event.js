@@ -9,7 +9,6 @@ const joinRoom =
   ({ username, room }) => {
     users[room][socket.client.id] = { username, id: socket.client.id };
     socket.join(room);
-    console.log("emit", users);
     socket.broadcast.in(room).emit(socketEvents.NEW_USER_JOIN, users[room]);
   };
 
@@ -20,6 +19,18 @@ const leaveRoom =
     delete users[room][socket.client.id];
     socket.broadcast.in(room).emit(socketEvents.USER_LEFT_ROOM, users[room]);
   };
+
+const callUser = (socket) => (data) => {
+  socket.to(data.userToCall).emit(socketEvents.CALL_USER, {
+    offer: data.offer,
+    from: data.from,
+    name: data.name,
+  });
+};
+
+const answerCall = (socket) => (data) => {
+  socket.to(data.to).emit(socketEvents.CALL_ACCEPTED, data.answer);
+};
 
 const SDPOffer =
   (socket) =>
@@ -36,9 +47,11 @@ const SDPAnswer =
 
 const ICECandidate =
   (socket) =>
-  ({ candidate, room }) => {
+  ({ candidate, room, to }) => {
+    console.log(to, candidate);
     console.log("switch candidate");
-    socket.broadcast.in(room).emit(socketEvents.ICE_CANDIDATE, candidate);
+    socket.to(to).emit(socketEvents.ICE_CANDIDATE, candidate);
+    // socket.broadcast.in(room).emit(socketEvents.ICE_CANDIDATE, candidate);
   };
 
 module.exports = {
@@ -47,4 +60,7 @@ module.exports = {
   SDPOffer,
   SDPAnswer,
   ICECandidate,
+  // v2,
+  callUser,
+  answerCall,
 };

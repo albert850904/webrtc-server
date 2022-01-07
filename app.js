@@ -21,6 +21,9 @@ const socketio = socket(server, {
 // socket connection
 const onConnection = (socket) => {
   console.log("Socket.io init success");
+  // 回傳用戶資訊
+  socket.emit(socketEvents.WHO_AM_I, socket.id);
+
   // 加入房間
   socket.on(socketEvents.JOIN_ROOM, (e) => {
     events.joinRoom(socket)({ username: e.username, room: "general" });
@@ -29,6 +32,13 @@ const onConnection = (socket) => {
   socket.on(socketEvents.DISCONNECTED, () => {
     events.leaveRoom(socket)({ room: "general" });
   });
+
+  // 打給特定用戶
+  socket.on(socketEvents.CALL_USER, (data) => events.callUser(socket)(data));
+
+  // 接聽
+  socket.on(socketEvents.ANSWERCALL, (data) => events.answerCall(socket)(data));
+
   // SDP offer
   socket.on(socketEvents.SDP_OFFER, (offer) => {
     events.SDPOffer(socket)({ offer, room: "general" });
@@ -38,8 +48,8 @@ const onConnection = (socket) => {
     events.SDPAnswer(socket)({ answer, room: "general" });
   });
   // ICE candidate
-  socket.on(socketEvents.ICE_CANDIDATE, (candidate) =>
-    events.ICECandidate(socket)({ candidate, room: "general" })
+  socket.on(socketEvents.ICE_CANDIDATE, (data) =>
+    events.ICECandidate(socket)(data)
   );
 };
 
